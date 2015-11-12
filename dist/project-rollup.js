@@ -106,7 +106,9 @@
 	}
 
 	// Returns the set of javascript targets for the chrome extension manifest object parameter
-	function chromeExtensionIdentifier(manifest) {
+	function chromeExtensionIdentifier(manifest, options) {
+		var extension = options != null && 'extension' in options ? options.extension : '.js';
+
 		var targets = new Set();
 
 		var addScript = targets.add.bind(targets);
@@ -165,7 +167,7 @@
 				for (var _iterator4 = manifest.web_accessible_resources[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
 					var resource = _step4.value;
 
-					if (resource.indexOf(".js") >= 0) {
+					if (resource.indexOf(extension) >= 0) {
 						addScript(resource);
 					}
 				}
@@ -305,7 +307,7 @@
 				var _iteratorError6 = undefined;
 
 				try {
-					for (var _iterator6 = this[_targetIdentifier](object)[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+					for (var _iterator6 = this[_targetIdentifier](object, this.rollupOptions)[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
 						var target = _step6.value;
 
 						targets.push(Path.resolve(Path.dirname(this[_targetFile]), this.srcDir, target));

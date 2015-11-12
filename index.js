@@ -47,7 +47,9 @@ function defaultIdentifier(object) {
 }
 
 // Returns the set of javascript targets for the chrome extension manifest object parameter
-function chromeExtensionIdentifier(manifest) {
+function chromeExtensionIdentifier(manifest, options) {
+    const extension = (options != null && 'extension' in options) ? options.extension : '.js';
+
 	let targets = new Set();
 
 	let addScript = targets.add.bind(targets);
@@ -78,7 +80,7 @@ function chromeExtensionIdentifier(manifest) {
 	// Get all targets from web accessible resources
 	if (manifest.web_accessible_resources) {
 		for (let resource of manifest.web_accessible_resources) {
-			if (resource.indexOf(".js") >= 0) { addScript(resource); }
+			if (resource.indexOf(extension) >= 0) { addScript(resource); }
 		}
 	}
 
@@ -161,7 +163,7 @@ class Project {
 
 	[_resolveTargets](object) {
 		let targets = [];
-		for (let target of this[_targetIdentifier](object)) {
+		for (let target of this[_targetIdentifier](object, this.rollupOptions)) {
 			targets.push(Path.resolve(Path.dirname(this[_targetFile]), this.srcDir, target));
 		}
 		return targets;
